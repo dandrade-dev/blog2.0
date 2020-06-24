@@ -35,7 +35,7 @@ namespace PWABlog.Controllers.Admin
         {
             AdminCategoriasListarViewModel model = new AdminCategoriasListarViewModel();
 
-            // Obter as Categorias
+            // Obter as Categorias para aparecer na lista
 
             var listaCategorias = _categoriaOrmService.ObterCategorias();
 
