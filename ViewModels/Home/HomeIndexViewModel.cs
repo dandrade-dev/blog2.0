@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PWABlog.ViewModels.Home
 {
-    public class HomeIndexViewModel
-    {
-        public string TituloPagina { get; set; }
+    public class HomeIndexViewModel : ViewModelAreaComum
+    {       
 
         public ICollection<PostagemHomeIndex> Postagens { get; set; }
         
         public ICollection<CategoriaHomeIndex> Categorias { get; set; }
-        
+
+        public ICollection<PostagemHomeIndex> DataPostagem { get; set; }
+
         public ICollection<EtiquetaHomeIndex> Etiquetas { get; set; }
         
         public ICollection<PostagemPopularHomeIndex> PostagensPopulares { get; set; }
@@ -17,6 +19,7 @@ namespace PWABlog.ViewModels.Home
         
         public HomeIndexViewModel()
         {
+            TituloPagina = "Blog PWA";
             Postagens = new List<PostagemHomeIndex>();
             Categorias = new List<CategoriaHomeIndex>();
             Etiquetas = new List<EtiquetaHomeIndex>();
@@ -26,6 +29,8 @@ namespace PWABlog.ViewModels.Home
 
     public class PostagemHomeIndex
     {
+        internal DateTime DataPostagem;
+
         public string Titulo { get; set; }
         public string Data { get; set; }
         public string Descricao { get; set; }

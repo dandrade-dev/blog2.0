@@ -10,6 +10,6 @@ namespace PWABlog.RequestModels.AdminEtiquetas
     {
         public int Id { get; set; }
         public string Nome { get; set; }
-        public CategoriaEntity Categoria { get; set; }
+        public int IdCategoria { get; set; }
     }
 }

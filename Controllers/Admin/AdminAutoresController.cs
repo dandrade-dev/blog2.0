@@ -1,47 +1,168 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PWABlog.Models.Blog.Autor;
+using PWABlog.RequestModels.AdminAutores;
+using PWABlog.ViewModels.Admin;
+using static PWABlog.ViewModels.Admin.AdminAutoresListarViewModel;
 
 namespace PWABlog.Controllers.Admin
 {
+    [Authorize]
     public class AdminAutoresController : Controller
     {
-
-        private readonly AutorOrmService _autorOrmService;
+        private readonly AutorOrmService _autoresOrmService;
 
         public AdminAutoresController(
-            AutorOrmService autorOrmService
-            )
-        { _autorOrmService = autorOrmService; }
+            AutorOrmService autoresOrmService
+        )
+        {
+            _autoresOrmService = autoresOrmService;
+        }
 
         [HttpGet]
-        [Route("admin/autor")]
-        [Route("admin/autor/Listar")]
-        public string Listar()
+        [Route("admin/autores")]
+        [Route("admin/autores/listar")]
+        public IActionResult Listar()
         {
-            return "Listar autores";
+            AdminAutoresListarViewModel model = new AdminAutoresListarViewModel();
+
+            // Alimentar o model com os autores que serão listados
+
+            // Obter as Etiquetas
+            var listarAtores = _autoresOrmService.ObterAutores();
+
+            foreach (var AutorEntity in listarAtores)
+            {
+                var autoresAdminAutores = new AutoresAdminAutores();
+                autoresAdminAutores.Id = AutorEntity.Id;
+                autoresAdminAutores.Nome = AutorEntity.Nome;
+                
+
+                model.Autores.Add(autoresAdminAutores);
+            }
+
+
+            return View(model);
         }
-        [HttpPost]        
-        [Route("admin/autor/criar")]
-        public string Criar()
+
+        [HttpGet]
+        [Route("admin/autores/{id}")]
+        public IActionResult Detalhar(int id)
         {
-            return "Criar autor";
+            return View();
         }
-        [HttpPost]
-        [Route("admin/autor/editar/{id?}")]
-        public string Editar(int id)
+
+        [HttpGet]
+        [Route("admin/autores/criar")]
+        public IActionResult Criar()
         {
-            return "Editar autor";
+            AdminAutoresCriarRequestModel model = new AdminAutoresCriarRequestModel();
+
+            // Definir possível erro de processamento (vindo do post do criar)
+            ViewBag.erro = TempData["erro-msg"];
+
+            return View(model);
         }
 
         [HttpPost]
-        [Route("admin/autor/remover/{id?}")]
-        public string Remover( int  id)
+        [Route("admin/autores/criar")]
+        public RedirectToActionResult Criar(AdminAutoresCriarRequestModel request)
         {
-            return "Remover autor";
+            var nome = request.Nome;
+
+            try
+            {
+                _autoresOrmService.CriarAutor(nome);
+            }
+            catch (Exception exception)
+            {
+                TempData["erro-msg"] = exception.Message;
+                return RedirectToAction("Criar");
+            }
+
+            return RedirectToAction("Listar");
+        }
+
+        [HttpGet]
+        [Route("admin/autores/editar/{id}")]
+        public IActionResult Editar(int id)
+        {
+            AdminAutoresCriarRequestModel model = new AdminAutoresCriarRequestModel();
+
+            // Obter etiqueta a editar
+            var autorEditar = _autoresOrmService.ObterAutorPorId(id);
+            if (autorEditar == null)
+            {
+                return RedirectToAction("Listar");
+            }
+
+            // Alimentar o model com os dados da etiqueta a ser editada
+            model.Nome = autorEditar.Nome;
+            model.Id = autorEditar.Id;
+
+             return View(model);
+
+          
+        }
+
+        [HttpPost]
+        [Route("admin/autores/editar/{id}")]
+        public RedirectToActionResult Editar(AdminAutoresEditarRequestModel request)
+        {
+            var id = request.Id;
+            var nome = request.Nome;
+
+            try
+            {
+                _autoresOrmService.EditarAutor(id, nome);
+            }
+            catch (Exception exception)
+            {
+                TempData["erro-msg"] = exception.Message;
+                return RedirectToAction("Editar", new { id = id });
+            }
+
+            return RedirectToAction("Listar");
+        }
+
+        [HttpGet]
+        [Route("admin/autores/remover/{id}")]
+        public IActionResult Remover(int id)
+        {
+            AdminAutoresCriarRequestModel model = new AdminAutoresCriarRequestModel();
+
+            // Obter etiqueta a editar
+            var autorRemover = _autoresOrmService.ObterAutorPorId(id);
+            if (autorRemover == null)
+            {
+                return RedirectToAction("Listar");
+            }            
+
+            // Alimentar o model com os dados da etiqueta a ser editada
+            model.Id = autorRemover.Id;
+            model.Nome = autorRemover.Nome;
+
+            return View();
+        }
+
+        [HttpPost]
+        [Route("admin/autores/remover/{id}")]
+        public RedirectToActionResult Remover(AdminAutoresRemoverRequestModel request)
+        {
+            var id = request.Id;
+
+            try
+            {
+                _autoresOrmService.RemoverAutor(id);
+            }
+            catch (Exception exception)
+            {
+                TempData["erro-msg"] = exception.Message;
+                return RedirectToAction("Remover", new { id = id });
+            }
+
+            return RedirectToAction("Listar");
         }
     }
 }

@@ -3,23 +3,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using PWABlog.Models.Blog.Categoria;
 using PWABlog.Models.Blog.Etiqueta;
 using PWABlog.RequestModels.AdminEtiquetas;
+using PWABlog.ViewModels.Admin;
+using static PWABlog.ViewModels.Admin.AdminEtiquetasCriarViewModel;
+using static PWABlog.ViewModels.Admin.AdminEtiquetasListarViewModel;
 
 namespace PWABlog.Controllers.Admin
 {
     public class AdminEtiquetasController : Controller
     {
         private readonly EtiquetaOrmService _etiquetaOrmService;
+        private readonly CategoriaOrmService _categoriaOrmService;
 
         public AdminEtiquetasController(
-            EtiquetaOrmService etiquetaOrmService
-            ){ }
+            EtiquetaOrmService etiquetaOrmService,
+            CategoriaOrmService categoriaOrmService
+            )
+        {
+            _etiquetaOrmService = etiquetaOrmService;
+            _categoriaOrmService = categoriaOrmService;
+        }
 
         [HttpGet]
         public IActionResult Listar()
         {
-            return View();
+            AdminEtiquetasListarViewModel model = new AdminEtiquetasListarViewModel();
+
+            //Obter as Etiquetas
+            var listarEtiquetas = _etiquetaOrmService.ObterEtiquetas();
+            
+            //Alimentar a model com as etiquetas serão Listadas
+
+            foreach(var etiquetaEntity in listarEtiquetas)
+            {
+                var etiquetaAdminEtiquetas = new EtiquetaAdminEtiquetas();
+                etiquetaAdminEtiquetas.Id = etiquetaEntity.Id;
+                etiquetaAdminEtiquetas.Nome = etiquetaEntity.Nome;
+                etiquetaAdminEtiquetas.NomeCategoria = etiquetaEntity.Categoria.Nome;
+
+                model.Etiquetas.Add(etiquetaAdminEtiquetas);
+
+            }
+
+
+            return View(model);
         }
 
         [HttpGet]
@@ -31,17 +60,35 @@ namespace PWABlog.Controllers.Admin
         [HttpGet]
         public IActionResult Criar()
         {
-            ViewBag.erro = TempData["erro-msg"];
-            return View();
+            AdminEtiquetasCriarViewModel model = new AdminEtiquetasCriarViewModel();
+
+            model.Erro = (string) TempData["erro-msg"];
+
+            //Obter Categorias
+            var listaCategorias = _categoriaOrmService.ObterCategorias();
+
+            //Alimentar o model com as categorias que serão colocadas no select
+
+            foreach (var categoriaEntity in listaCategorias)
+            {
+                var categoriaAdminEtiquetas = new CategoriaAdminEtiquetas();
+                categoriaAdminEtiquetas.IdCategoria  = categoriaEntity.Id;                
+                categoriaAdminEtiquetas.NomeCategoria = categoriaEntity.Nome;
+
+                model.Categorias.Add(categoriaAdminEtiquetas);
+            }
+
+            return View(model);
         }
+        [HttpPost]
         public RedirectToActionResult Criar(AdminEtiquetasCriarRequestModel request)
         {
             var nome = request.Nome;
-            var categoria = request.Categoria;
+            var idCategoria = request.IdCategoria;
 
             try
             {
-                _etiquetaOrmService.CriarEtiqueta(nome,categoria);
+                _etiquetaOrmService.CriarEtiqueta(nome, idCategoria);
             }
             catch (Exception exception)
             {
@@ -55,10 +102,39 @@ namespace PWABlog.Controllers.Admin
         [HttpGet]
         public IActionResult Editar(int id)
         {
-            ViewBag.id = id;
-            ViewBag.erro = TempData["erro-msg"];
 
-            return View();
+            AdminEtiquetasEditarViewModel model = new AdminEtiquetasEditarViewModel();
+
+            // Obter etiqueta a editar
+            var etiquetaAEditar = _etiquetaOrmService.ObterEtiquetaPorId(id);
+            if (etiquetaAEditar == null)
+            {
+                return RedirectToAction("Listar");
+            }
+
+            // Definir possível erro de processamento (vindo do post do criar)
+            model.Erro = (string)TempData["erro-msg"];
+
+            // Obter as Categorias
+            var listaCategorias = _categoriaOrmService.ObterCategorias();
+
+            // Alimentar o model com as categorias que serão colocadas no <select> do formulário
+            foreach (var categoriaEntity in listaCategorias)
+            {
+                var categoriaAdminEtiquetas = new CategoriaAdminEtiquetas();
+                categoriaAdminEtiquetas.IdCategoria = categoriaEntity.Id;
+                categoriaAdminEtiquetas.NomeCategoria = categoriaEntity.Nome;
+
+                model.Categorias.Add(categoriaAdminEtiquetas);
+            }
+
+            // Alimentar o model com os dados da etiqueta a ser editada
+            model.IdEtiqueta = etiquetaAEditar.Id;
+            model.NomeEtiqueta = etiquetaAEditar.Nome;
+            model.IdCategoriaEtiqueta = etiquetaAEditar.Categoria.Id;
+            model.TituloPagina += model.NomeEtiqueta;
+
+            return View(model);
         }
 
         [HttpPost]
@@ -67,11 +143,11 @@ namespace PWABlog.Controllers.Admin
         {
             var id = request.Id;
             var nome = request.Nome;
-            var categoria = request.Categoria;
+            var idCategoria = request.IdCategoria;
 
             try
             {
-                _etiquetaOrmService.EditarEtiqueta(id, nome,categoria);
+                _etiquetaOrmService.EditarEtiqueta(id, nome, idCategoria);
             }
             catch (Exception exception)
             {
@@ -84,9 +160,24 @@ namespace PWABlog.Controllers.Admin
         [HttpGet]
         public IActionResult Remover(int id)
         {
-            ViewBag.id = id;
-            ViewBag.erro = TempData["erro-msg"];
-            return View();
+            AdminEtiquetasRemoverViewModel model = new AdminEtiquetasRemoverViewModel();
+
+            // Obter etiqueta a remover
+            var etiquetaARemover = _etiquetaOrmService.ObterEtiquetaPorId(id);
+            if (etiquetaARemover == null)
+            {
+                return RedirectToAction("Listar");
+            }
+
+            // Definir possível erro de processamento (vindo do post do criar)
+            model.Erro = (string)TempData["erro-msg"];
+
+            // Alimentar o model com os dados da etiqueta a ser editada
+            model.IdEtiqueta = etiquetaARemover.Id;
+            model.NomeEtiqueta = etiquetaARemover.Nome;
+            model.TituloPagina += model.NomeEtiqueta;
+
+            return View(model);
 
         }
         [HttpPost]

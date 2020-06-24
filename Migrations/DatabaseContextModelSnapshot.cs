@@ -233,6 +233,9 @@ namespace PWABlog.Migrations
                     b.Property<int?>("CategoriaId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("DataPostagem")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("varchar(640) CHARACTER SET utf8mb4")

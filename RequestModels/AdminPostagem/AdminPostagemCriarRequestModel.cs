@@ -14,7 +14,11 @@ namespace PWABlog.RequestModels.AdminPostagem
 
         public string Descricao { get; set; }
 
-        public AutorEntity Autor { get; set; }
-        public CategoriaEntity Categoria { get; set; }
+        public string DataPostagem { get; set; }
+
+        public int IdAutor { get; set; }
+        public int IdCategoria { get; set; }
+
+        public string Texto { get; set; }
     }
 }
