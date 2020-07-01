@@ -160,9 +160,10 @@ namespace PWABlog.Controllers.Admin
                 model.Autores.Add(autorAdminPostagens);
             }
 
-            // Alimentar o model com os dados da etiqueta a ser editada
+            // Alimentar o model com os dados da Postagem a ser editada
             model.IdPostagem = postagemEditar.Id;
             model.NomePostagem = postagemEditar.Descricao;
+            model.DataPostagem = postagemEditar.DataPostagem;
             model.IdAutorPostagem = postagemEditar.Autor.Id;
             model.IdCategoriaPostagem = postagemEditar.Categoria.Id;
             model.TituloPagina += model.NomePostagem;
@@ -178,11 +179,11 @@ namespace PWABlog.Controllers.Admin
             var descricao = request.Descricao;
             var idCategoria = Convert.ToInt32(request.IdCategoria);
             var texto = request.Texto;
-            var dataExibicao = DateTime.Parse(request.DataPostagem);
+            var dataPostagem = DateTime.Parse(request.DataPostagem);
 
             try
             {
-                _postagemOrmService.EditarPostagem(id, titulo, descricao, idCategoria, texto, dataExibicao);
+                _postagemOrmService.EditarPostagem(id, titulo, descricao, idCategoria, texto, dataPostagem);
             }
             catch (Exception exception)
             {

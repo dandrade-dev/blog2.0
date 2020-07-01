@@ -42,7 +42,6 @@ namespace PWABlog.Controllers.Admin
                 model.Autores.Add(autoresAdminAutores);
             }
 
-
             return View(model);
         }
 
@@ -90,16 +89,17 @@ namespace PWABlog.Controllers.Admin
         {
             AdminAutoresEditarViewModel model = new AdminAutoresEditarViewModel();
 
-            // Obter etiqueta a editar
+            // Obter autor a editar
             var autorEditar = _autoresOrmService.ObterAutorPorId(id);
             if (autorEditar == null)
             {
                 return RedirectToAction("Listar");
             }
 
-            // Alimentar o model com os dados da etiqueta a ser editada
-            model.Nome = autorEditar.Nome;
+            // Alimentar o model com os dados da autor a ser editada
             model.Id = autorEditar.Id;
+            model.Nome = autorEditar.Nome;
+            
 
              return View(model);
 
