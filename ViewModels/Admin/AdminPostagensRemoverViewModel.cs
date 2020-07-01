@@ -12,6 +12,8 @@ namespace PWABlog.ViewModels.Admin
 
         public string NomePostagem { get; set; }
 
+        public string DescricaoPostagem { get; set; }
+
         public DateTime DataPostagem { get; set; }
 
         public string Erro { get; set; }

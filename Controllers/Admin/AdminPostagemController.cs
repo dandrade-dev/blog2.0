@@ -41,9 +41,10 @@ namespace PWABlog.Controllers.Admin
             {
                 var postagemAdminPostagens = new PostagemAdminPostagens();
                 postagemAdminPostagens.IdPostagem = postagemEntity.Id;
-                postagemAdminPostagens.NomePostagem = postagemEntity.Descricao;
-                postagemAdminPostagens.NomeAutor = postagemEntity.Autor.Nome;
-                postagemAdminPostagens.NomeCategoria = postagemEntity.Categoria.Nome;
+                postagemAdminPostagens.NomePostagem = postagemEntity.Titulo;
+                postagemAdminPostagens.DescricaoPostagem = postagemEntity.Descricao;
+               // postagemAdminPostagens.NomeAutores = postagemEntity.Autor.Nome;
+                postagemAdminPostagens.NomeCategorias = postagemEntity.Categoria.Nome;
 
                 model.Postagens.Add(postagemAdminPostagens);
 

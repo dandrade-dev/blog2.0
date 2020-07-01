@@ -17,9 +17,7 @@
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Nome</th>
-                    <th>Etiquetas</th>
-                    <th>Postagens</th>
+                    <th>Nome</th>                    
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -28,12 +26,10 @@
                 {
                 <tr>
                     <td>@categorias.Id</td>
-                    <td>@categorias.Nome</td>
-                    <td>@categorias.NomeEtiqueta</td>
-                    <td>@categorias.NomePostagem</td>
+                    <td>@categorias.Nome</td>                    
                     <td>
-                        <a class="btn btn-default btn-xs" href="/admin/etiquetas/editar/@categorias.Id">Editar</a>
-                        <a class="btn btn-danger btn-xs" href="/admin/etiquetas/remover/@categorias.Id">Remover</a>
+                        <a class="btn btn-default btn-xs" href="/admin/categorias/editar/@categorias.Id">Editar</a>
+                        <a class="btn btn-danger btn-xs" href="/admin/categorias/remover/@categorias.Id">Remover</a>
                     </td>
                 </tr>
                 }

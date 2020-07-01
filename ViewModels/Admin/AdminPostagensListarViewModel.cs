@@ -22,10 +22,12 @@ namespace PWABlog.ViewModels.Admin
 
         public string NomePostagem { get; set; }
 
+        public string DescricaoPostagem { get; set; }
+
         public DateTime DataPostagem { get; set; }
 
-        public string NomeCategoria { get; set; }
+        public string NomeCategorias { get; set; }
 
-        public string NomeAutor { get; set; }
+        public string NomeAutores { get; set; }
     }
 }

@@ -16,6 +16,8 @@ namespace PWABlog.Controllers.Admin
         {
             AdminPainelViewModel model = new AdminPainelViewModel();
 
+
+
             return View(model);
         }
     }

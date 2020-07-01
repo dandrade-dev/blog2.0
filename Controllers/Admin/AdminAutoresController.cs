@@ -57,7 +57,7 @@ namespace PWABlog.Controllers.Admin
         [Route("admin/autores/criar")]
         public IActionResult Criar()
         {
-            AdminAutoresCriarRequestModel model = new AdminAutoresCriarRequestModel();
+            AdminAutoresCriarViewModel model = new AdminAutoresCriarViewModel();
 
             // Definir possível erro de processamento (vindo do post do criar)
             ViewBag.erro = TempData["erro-msg"];
@@ -88,7 +88,7 @@ namespace PWABlog.Controllers.Admin
         [Route("admin/autores/editar/{id}")]
         public IActionResult Editar(int id)
         {
-            AdminAutoresCriarRequestModel model = new AdminAutoresCriarRequestModel();
+            AdminAutoresEditarViewModel model = new AdminAutoresEditarViewModel();
 
             // Obter etiqueta a editar
             var autorEditar = _autoresOrmService.ObterAutorPorId(id);
@@ -130,7 +130,7 @@ namespace PWABlog.Controllers.Admin
         [Route("admin/autores/remover/{id}")]
         public IActionResult Remover(int id)
         {
-            AdminAutoresCriarRequestModel model = new AdminAutoresCriarRequestModel();
+            AdminAutoresRemoverViewModel model = new AdminAutoresRemoverViewModel();
 
             // Obter etiqueta a editar
             var autorRemover = _autoresOrmService.ObterAutorPorId(id);

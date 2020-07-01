@@ -12,6 +12,7 @@ namespace PWABlog.ViewModels.Admin
         public AdminAutoresListarViewModel()
         {
             TituloPagina = "Autores - Administrador";
+            Autores = new List<AutoresAdminAutores>();
         }
        
     }
